@@ -1,0 +1,7 @@
+{
+  "name": "IP Indicator",
+  "description": "Displays the current IP address of the network with it's relevant interface name. Scroll on the panel to change the interface. Click/Right click to copy the IP address to clipboard.",
+  "uuid": "ip-indicator@phoenixcreation",
+  "shell-version": ["45", "46", "47"],
+  "url": "https://github.com/phoenixcreation/ip_indicator_gnome"
+}
