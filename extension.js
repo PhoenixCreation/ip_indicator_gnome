@@ -33,8 +33,12 @@ const Indicator = GObject.registerClass(
         name: "ip-indicator-label",
         y_align: Clutter.ActorAlign.CENTER,
         y_expand: true,
+        x_align: Clutter.ActorAlign.CENTER,
+        x_expand: true,
+        min_width: 120,
       });
       this.add_child(this.label);
+      this.label.set_text("Loading...");
 
       this.current_index = 0;
       this.ip_addresses = [];
