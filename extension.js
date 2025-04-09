@@ -116,6 +116,19 @@ const Indicator = GObject.registerClass(
 
             return getPriority(a.ip) - getPriority(b.ip); // Sort based on priority
           });
+        
+          // Retrieve public IP
+          let [ok, stdout, stderr] = GLib.spawn_command_line_sync(
+            "dig +short myip.opendns.com @resolver1.opendns.com"
+          );
+          
+          if (ok) {
+            // Trim and add the additional IP
+            let public_ip = String(stdout).trim(); // Convert buffer to string
+            result.push({ interface: "public", ip: public_ip });
+          } else {
+            logError(stderr, "Failed to fetch public IP address");
+          }
 
         return result;
       } catch (e) {
