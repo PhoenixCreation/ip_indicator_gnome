@@ -1,5 +1,21 @@
 import Gio from "gi://Gio";
 
+// Taken from https://gjs.guide/guides/gio/subprocesses.html#complete-examples
+
+/* Gio.Subprocess */
+Gio._promisify(Gio.Subprocess.prototype, "communicate_async");
+Gio._promisify(Gio.Subprocess.prototype, "communicate_utf8_async");
+Gio._promisify(Gio.Subprocess.prototype, "wait_async");
+Gio._promisify(Gio.Subprocess.prototype, "wait_check_async");
+
+/* Ancillary Methods */
+Gio._promisify(
+  Gio.DataInputStream.prototype,
+  "read_line_async",
+  "read_line_finish_utf8"
+);
+Gio._promisify(Gio.OutputStream.prototype, "write_bytes_async");
+
 /**
  * Execute a command asynchronously and return the output from `stdout` on
  * success or throw an error with output from `stderr` on failure.
@@ -18,40 +34,27 @@ export async function execCommunicate(argv, input = null, cancellable = null) {
 
   if (input !== null) flags |= Gio.SubprocessFlags.STDIN_PIPE;
 
-  const proc = Gio.Subprocess.new(argv, flags);
+  const proc = new Gio.Subprocess({ argv, flags });
   proc.init(cancellable);
 
   if (cancellable instanceof Gio.Cancellable)
     cancelId = cancellable.connect(() => proc.force_exit());
 
   try {
-    const result = await new Promise((resolve, reject) => {
-      proc.communicate_utf8_async(null, null, (proc, res) => {
-        try {
-          const [ok, stdout, stderr] = proc.communicate_utf8_finish(res);
-          const status = proc.get_exit_status();
+    const [stdout, stderr] = await proc.communicate_utf8_async(input, null);
 
-          if (status !== 0) {
-            reject(
-              new Gio.IOErrorEnum({
-                code: Gio.IOErrorEnum.FAILED,
-                message: stderr
-                  ? stderr.trim()
-                  : `Command '${argv.join(
-                      " "
-                    )}' failed with exit code ${status}`,
-              })
-            );
-          } else {
-            resolve(stdout.trim());
-          }
-        } catch (error) {
-          reject(error);
-        }
+    const status = proc.get_exit_status();
+
+    if (status !== 0) {
+      throw new Gio.IOErrorEnum({
+        code: Gio.IOErrorEnum.FAILED,
+        message: stderr
+          ? stderr.trim()
+          : `Command '${argv}' failed with exit code ${status}`,
       });
-    });
+    }
 
-    return result;
+    return stdout.trim();
   } finally {
     if (cancelId > 0) cancellable.disconnect(cancelId);
   }

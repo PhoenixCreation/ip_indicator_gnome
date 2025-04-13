@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.ip-indicator" path="/org/gnome/shell/extensions/ip-indicator/">
+    <key name="show-public-ip" type="b">
+      <default>false</default>
+    </key>
+    <key name="show-public-ip-on-top" type="b">
+      <default>false</default>
+    </key>
+  </schema>
+</schemalist>
