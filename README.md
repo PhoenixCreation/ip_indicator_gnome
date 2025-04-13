@@ -13,6 +13,8 @@ The **IP Indicator** Gnome extension provides a quick and easy way to display an
 - **Scroll through IP addresses:** Use the mouse scroll to cycle through multiple IP addresses.
 - **Automatic updates:** The displayed IP address updates every second to reflect changes in your network configuration.
 - **Prioritized display:** The extension prioritizes private IP ranges (e.g., `10.x.x.x`, `192.x.x.x`, `172.x.x.x`) for display.
+- **Public IP** shows the public facing IP using the DNS query. You can enable/disable public IP from extension settings and also set it's priority.
+- For change log refer to [CHANGELOG](CHANGELOG.md)
 
 ---
 
@@ -51,6 +53,20 @@ The **IP Indicator** Gnome extension provides a quick and easy way to display an
     dbus-run-session -- gnome-shell --nested --wayland
     ```
 ---
+
+## Development(Wayland only)
+
+1. **Clone the Repository**
+
+   ```bash
+   git clone https://github.com/phoenixcreation/ip_indicator_gnome
+   cd ip_indicator_gnome
+   ```
+2. **Install with latest changes**
+   Run the convenience script 
+   ```
+   bash launch-gnome.bash
+   ```
 
 ## Usage
 
